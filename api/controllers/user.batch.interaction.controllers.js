@@ -52,9 +52,9 @@ exports.getBatchesInfoForUser = (req, res) => {
 		}
 		var result=[];
 		for(var i=0;i<userBatch.batchids;i++){
-			truffle_connect.getBatch(userBatch.batchids[i],req.body.username,(batchInfo)=>{
-				result.push(batchInfo);
-			});
+		 	await truffle_connect.getBatch(userBatch.batchids[i],req.body.username,(batchInfo)=>{
+					result.push(batchInfo);
+				});
 		}
 		res.send({username:userBatch.username,batchesInfo:result});
 	}).catch(err => {
