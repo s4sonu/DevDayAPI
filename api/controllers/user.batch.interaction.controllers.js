@@ -1,4 +1,4 @@
-const UsersBatchInteraction = require('../models/users.batch.interaction.model.js');
+const UsersBatchInteraction = require('../models/user.batch.interaction.model.js');
 const truffle_connect = require('../../connection/app.js');
 exports.addBatchToUser = (username, batchid) => {
 
