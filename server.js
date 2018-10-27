@@ -62,6 +62,7 @@ app.post('/sendCoin', (req, res) => {
   });
 });
 require('./api/routes/user.routes.js')(app);
+require('./api/routes/medicine.batch.routes.js')(app);
 app.listen(port, () => {
 
   // fallback - use your fallback strategy (local node / hosted node + in-dapp id mgmt / fail)

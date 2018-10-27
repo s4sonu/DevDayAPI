@@ -8,7 +8,7 @@ module.exports = (app) => {
     app.post('/medicine/batch/recieve', batch.recieve);
 
     // Retrieve medicine batch with batchid
-    app.post('get/medicine/batch/:batchid', batch.findByBatchId);
+    app.get('get/medicine/batch', batch.findByBatchId);
 
     // find user with username and update
     app.post('/medicine/batch/dispatch', batch.dispatch);
