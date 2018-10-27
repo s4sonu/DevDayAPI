@@ -95,7 +95,9 @@ exports.update = (req, res) => {
 };
 
 exports.createSupplyChainUsers = (req, res) => {
-    truffle_connect.createSupplyChainUsers(req.body.userAddress, req.body.userType,req.sender,(address)=>{
-
+    truffle_connect.createSupplyChainUsers(req.body.userName, req.body.userAccount, req.body.userType ,req.body.user,(address)=>{
+        res.send({
+            "status":"success"
+        })
     });
 }

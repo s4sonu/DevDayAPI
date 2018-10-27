@@ -147,7 +147,7 @@ contract Medchain {
     function receiveBatch(string _batchId, string _destinationCountry)
     onlyvalidUser()
     checkBatch(_batchId)
-    canDispatch( _batchId)
+    canReceiveBatch( _batchId)
     checkPreviousUser(_batchId)
     onlyValidDestination(_batchId,_destinationCountry)
     public
