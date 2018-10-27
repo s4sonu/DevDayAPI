@@ -8,7 +8,7 @@ module.exports = (app) => {
     app.post('/user/signin', users.findOne);
 
     // find user with username and update
-    app.post('/user/update', users.update);
+    // app.post('/user/update', users.update);
 
     // Create a new supply chain user
     app.post('/create/supplychain/user', users.createSupplyChainUsers);

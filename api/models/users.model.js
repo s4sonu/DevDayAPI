@@ -10,13 +10,13 @@ const UserSchema = mongoose.Schema({
     },
     approved:{
         type:Boolean
-    }
+    },
     password: {
         type: String,
         required: 'Please fill in a password'
     },
     usertype:{
-    	type: String,
+    	type: Number,
     	required: 'Please fill in a usertype',
     },
     blockchainId:{
