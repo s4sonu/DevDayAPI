@@ -1,7 +1,7 @@
 const User = require('../models/users.model.js');
 const truffle_connect = require('../../connection/app.js');
 const BatchidHistory = require('../models/batchid.history.model.js');
-const FakeMedicineCtrl = require('../models/fake.medicine.controller.js');
+const FakeMedicineCtrl = require('../controllers/fake.medicine.controller.js');
 // Create and Save a new User
 exports.create = (req, res) => {
 

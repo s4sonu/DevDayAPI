@@ -1,7 +1,7 @@
 const truffle_connect = require('../../connection/app.js');
 const BatchidHistory = require('../models/batchid.history.model.js');
 const userBatchInteraction = require('../controllers/user.batch.interaction.controllers.js');
-const FakeMedicineCtrl = require('../models/fake.medicine.controller.js');
+const FakeMedicineCtrl = require('../controllers/fake.medicine.controller.js');
 exports.create = (req, res) => {
 	truffle_connect.createBatch(req.body.batchId,
 		req.body.noOfMedicines,
