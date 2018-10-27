@@ -2,8 +2,8 @@ const contract = require('truffle-contract');
 
 const metacoin_artifact = require('../build/contracts/MetaCoin.json');
 var MetaCoin = contract(metacoin_artifact);
-// const supply_artifact = require('../build/contracts/MylanSupplyChain.json');
-// var Supply = contract(supply_artifact);
+const supply_artifact = require('../build/contracts/Medchain.json');
+var Supply = contract(supply_artifact);
 
 module.exports = {
   start: function(callback) {
@@ -76,7 +76,7 @@ module.exports = {
       callback(accs);
     });
   },
-  createBatch:function(_batchId,_noOfMedicines,_manufacturedDate,_createdDate,_expirydate,_location,_sourceCountry, _destinationCountry){
+  createBatch:function(_batchId,_noOfMedicines,_manufacturedDate,_createdDate,_expirydate,_location,_sourceCountry, _destinationCountry,sender){
     var self = this;
     // Bootstrap the Supply abstraction for Use.
     Supply.setProvider(self.web3.currentProvider);
