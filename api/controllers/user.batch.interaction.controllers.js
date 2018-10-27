@@ -56,7 +56,7 @@ exports.getBatchesInfoForUser = (req, res) => {
 				result.push(batchInfo);
 			});
 		}
-		res.send({userBatch.username,batchesInfo:result});
+		res.send({username:userBatch.username,batchesInfo:result});
 	}).catch(err => {
         res.status(500).send({
         	status: "failure",
