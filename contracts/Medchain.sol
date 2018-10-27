@@ -1,4 +1,4 @@
-pragma solidity ^0.4.22;
+pragma solidity ^0.4.18;
 
 contract Medchain {
     address public admin;
@@ -27,6 +27,7 @@ contract Medchain {
         string batchId;
         uint noOfMedicines;
         string location;
+        string currentOwnerName;
         address currentOwner;
         STATUS status;
         USERTYPES currentOwnerType;
@@ -46,55 +47,56 @@ contract Medchain {
     mapping(string=>BatchDate) private batchdates;
     
     modifier onlyAdmin(){
-        require(msg.sender==admin,"Admin permission required");
+        require(msg.sender==admin);
         _;
     }
     
     modifier onlyvalidUser(){
-        require(users[msg.sender].userAccount!=0,"Invalid User");
+        require(users[msg.sender].userAccount!=0);
         _;
     }
     
     modifier checkBatch(string _batchId){
-        require(batches[_batchId].currentOwner!=0,"Invalid batch");
+        require(batches[_batchId].currentOwner!=0);
         _;
     }
     
     modifier canDispatch(string _batchId){
-        require(batches[_batchId].status!=STATUS.DISPATCHED && batches[_batchId].currentOwner==msg.sender ,"Cannot dispatch the batch");
+        require(batches[_batchId].status!=STATUS.DISPATCHED && batches[_batchId].currentOwner==msg.sender);
         _;
     }
     
     modifier canReceiveBatch(string _batchId) { 
-        require(batches[_batchId].status!=STATUS.RECEIVED, "Batch cannot be received");
+        require(batches[_batchId].status!=STATUS.RECEIVED);
         _; 
     }
     
     modifier onlyValidDestination(string _batchId, string _destinationCountry) { 
-        require(keccak256(batches[_batchId].destinationCountry)==keccak256(_destinationCountry), "Destination country does not match");
+        require(keccak256(batches[_batchId].destinationCountry)==keccak256(_destinationCountry));
         _;
     }
     modifier checkPreviousUser(string _batchId) { 
-        require(uint(batches[_batchId].currentOwnerType)+1==uint(users[msg.sender].userType), "You are not allowed to receive the batch");
+        require(uint(batches[_batchId].currentOwnerType)+1==uint(users[msg.sender].userType));
         _; 
     }
     modifier checkSameUser(string _batchId) { 
-        require(batches[_batchId].currentOwner==msg.sender, "You are not allowed to dispatch the batch");
+        require(batches[_batchId].currentOwner==msg.sender);
         _; 
     }
     
     
     struct User {
+        string userName;
         address userAccount;
         USERTYPES userType;
     }
-    constructor() public {
+    function Medchain() public {
         admin = msg.sender;
-        createUser(admin, USERTYPES.ADMIN);
+        createUser("MedTrackAdmin", admin, USERTYPES.ADMIN);
     }
     
-    function createUser(address _useraccount, USERTYPES _userType) onlyAdmin public {
-        User memory data = User(_useraccount, _userType);
+    function createUser(string _userName, address _useraccount, USERTYPES _userType) onlyAdmin public {
+        User memory data = User(_userName,_useraccount, _userType);
         users[_useraccount]=data;
     }
     
@@ -108,7 +110,7 @@ contract Medchain {
                          string _destinationCountry) 
                          onlyAdmin 
                          public{
-                             Batch memory data = Batch(_batchId, _noOfMedicines, _location, admin,STATUS.CREATED, USERTYPES.ADMIN, _sourceCountry, _destinationCountry);
+                             Batch memory data = Batch(_batchId, _noOfMedicines, _location,"MedTrackAdmin", admin,STATUS.CREATED, USERTYPES.ADMIN, _sourceCountry, _destinationCountry);
                              BatchDate memory datedata = BatchDate(_batchId, _manufacturedDate, _createdDate, _expirydate, "");
                              batches[_batchId] = data;
                              batchdates[_batchId]= datedata;
@@ -117,10 +119,10 @@ contract Medchain {
     function getBatchData(string _batchId) 
     public 
     view
-    returns(string, uint, string, address, STATUS, USERTYPES, string, string){
+    returns(string, uint, string,string, address, STATUS, USERTYPES, string, string){
         Batch memory data = batches[_batchId];
         
-        return (data.batchId, data.noOfMedicines, data.location, data.currentOwner, data.status, data.currentOwnerType, data.sourceCountry, data.destinationCountry);
+        return (data.batchId, data.noOfMedicines, data.location,data.currentOwnerName, data.currentOwner, data.status, data.currentOwnerType, data.sourceCountry, data.destinationCountry);
     }
     
     function getBatchDateData(string _batchId) 
@@ -153,6 +155,7 @@ contract Medchain {
         batches[_batchId].status = STATUS.RECEIVED;
         batches[_batchId].currentOwner = msg.sender;
         batches[_batchId].currentOwnerType = users[msg.sender].userType;
+        batches[_batchId].currentOwnerName = users[msg.sender].userName;
     }
     
 }

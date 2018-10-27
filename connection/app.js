@@ -1,7 +1,4 @@
 const contract = require('truffle-contract');
-
-const metacoin_artifact = require('../build/contracts/MetaCoin.json');
-var MetaCoin = contract(metacoin_artifact);
 const supply_artifact = require('../build/contracts/Medchain.json');
 var Supply = contract(supply_artifact);
 
@@ -27,42 +24,6 @@ module.exports = {
       self.account = self.accounts[2];
 
       callback(self.accounts);
-    });
-  },
-  refreshBalance: function(account, callback) {
-    var self = this;
-
-    // Bootstrap the MetaCoin abstraction for Use.
-    MetaCoin.setProvider(self.web3.currentProvider);
-
-    var meta;
-    MetaCoin.deployed().then(function(instance) {
-      meta = instance;
-      return meta.getBalance.call(account, {from: account});
-    }).then(function(value) {
-        callback(value.valueOf());
-    }).catch(function(e) {
-        console.log(e);
-        callback("Error 404");
-    });
-  },
-  sendCoin: function(amount, sender, receiver, callback) {
-    var self = this;
-
-    // Bootstrap the MetaCoin abstraction for Use.
-    MetaCoin.setProvider(self.web3.currentProvider);
-
-    var meta;
-    MetaCoin.deployed().then(function(instance) {
-      meta = instance;
-      return meta.sendCoin(receiver, amount, {from: sender});
-    }).then(function() {
-      self.refreshBalance(sender, function (answer) {
-        callback(answer);
-      });
-    }).catch(function(e) {
-      console.log(e);
-      callback("ERROR 404");
     });
   },
   createAccount:function(password, callback ){
