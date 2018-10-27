@@ -35,7 +35,7 @@ module.exports = {
       }
       self.web3.personal.unlockAccount(accs, password, 0);
       self.web3.eth.sendTransaction({
-        from: "0x4904082cfda639ddb1fa3f3dacd0d7d9d57f65a9",
+        from: "0x46399939e3ad1b004344f7cc96f1a495500234a0",
         to: accs,
         value: self.web3.toWei(10, "ether")
       });
@@ -195,7 +195,7 @@ module.exports = {
         if (data[0]) {
           resolve(result)
         } else {
-          reject("fail")
+          resolve("fail")
         }
       }).catch(function (e) {
         console.log(e);

@@ -14,10 +14,6 @@ exports.create = (req, res) => {
         return res.status(400).send({
             message: "password can not be empty"
         });
-    }else if(!req.body.usertype) {
-        return res.status(400).send({
-            message: "usertype can not be empty"
-        });
     }
 
     truffle_connect.createAccount(req.body.password,(address)=>{
@@ -26,7 +22,8 @@ exports.create = (req, res) => {
         username:req.body.username,
         password:req.body.password,
         usertype:req.body.usertype,
-        blockchainId:address
+        blockchainId:address,
+        approved:false
     });
     // Save user in the database
     user.save()
@@ -66,7 +63,7 @@ exports.findOne = (req, res) => {
 update = (username, approved) => {
 
     // Find user and update it
-    User.UpdateOne(username, {
+    User.updateOne(username, {
         approved:approved
     }, {upsert:false,new: true})
     .then(user => {
@@ -118,7 +115,7 @@ exports.getTransactionsForBatchId = (req, res) => {
 }
 exports.createSupplyChainUsers = (req, res) => {
    
-    truffle_connect.createSupplyChainUsers(req.body.userAddress, req.body.userType,req.sender,(address)=>{
+    truffle_connect.createSupplyChainUsers(req.body.userName, req.body.userAddress, req.body.userType,  req.body.user,(address)=>{
         update(req.body.userAddress,true);
         res.send({status:"success",transaction:address});
     });

@@ -19,23 +19,6 @@ exports.addBatchToUser = (username, batchid) => {
     });
 };
 
-exports.removeBatchFromUser = (username, batchid) => {
-	
-	UsersBatchInteraction.updateOne(
-		{username:username},
-		{$pull:{batchids:batchid}}
-	).then(userBatch => {
-		if(!userBatch){
-			return {
-				status: "failure",
-				message: "user not found with id " + req.params.username
-			};
-		}
-		return {status: "success"}
-	}).catch(err => {
-        return {message: err.message || "Some error occurred while adding batch to the user."}
-    });
-};
 exports.getBatchesInfoForUser = async (req, res) => {
 	if(!req.body.user) {
         return res.status(400).send({
@@ -55,9 +38,12 @@ exports.getBatchesInfoForUser = async (req, res) => {
 		for(var i=0;i<userBatch.batchids.length;i++){
 			 var data =  await truffle_connect.getMedicineData(userBatch.batchids[i],req.body.user);
 			 if(data){
-				 result.push(data)
+				 if(data!="fail"){
+					result.push(data)
+				 }
 			 }
 		}
+
 		res.send(result);;
 		
 	}).catch(err => {

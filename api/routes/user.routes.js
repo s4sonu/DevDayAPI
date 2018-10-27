@@ -14,4 +14,6 @@ module.exports = (app) => {
     app.post('/create/supplychain/user', users.createSupplyChainUsers);
 
     app.get('/get/All/users',users.getAllUsers);
+
+    app.post('/get/transactions',users.getTransactionsForBatchId);
 }

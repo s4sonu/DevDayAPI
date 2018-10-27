@@ -58,10 +58,9 @@ exports.dispatch = (req, res) => {
 		req.body.destinationCountry,
 		req.body.user,
 		(transaction)=>{
-		userBatchInteraction.addBatchToUser(req.body.user, req.body.batchId);
 		BatchidHistory.updateOne(
-			{batchId:req.body._batchId},
-			{$push:{transactions:{id:transaction.tx,action:"recieve",transactionTime:new Date(),initiater:req.body.user,username:req.body.username,usertype:req.body.usertype}}}
+			{batchId:req.body.batchId},
+			{$push:{transactions:{id:transaction.tx,action:"dispatch",transactionTime:new Date(),initiater:req.body.user,username:req.body.username,usertype:req.body.usertype}}}
 		).then(data => {
 	        res.send({
 				"status":"success"
