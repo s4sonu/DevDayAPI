@@ -37,7 +37,7 @@ module.exports = {
       callback(accs);
     });
   },
-  createBatch:function(_batchId,_noOfMedicines,_manufacturedDate,_createdDate,_expirydate,_location,_sourceCountry, _destinationCountry,sender){
+  createBatch:function(_batchId,_noOfMedicines,_manufacturedDate,_createdDate,_expirydate,_location,_sourceCountry, _destinationCountry,sender, callback){
     var self = this;
     // Bootstrap the Supply abstraction for Use.
     Supply.setProvider(self.web3.currentProvider);
@@ -95,21 +95,31 @@ module.exports = {
     var meta;
     Supply.deployed().then(function(instance) {
       supply = instance;
-      return supply.getBatch(_batchId, {from: sender, gas:4600000});
+      return supply.getBatchData(_batchId, {from: sender, gas:4600000});
     }).then(function(data) {
       console.log(data)
       let result ={
         "batchId":data[0],
         "numOfMedicines":data[1],
-        "startdate":data[2],
-        "enddate":data[3],
+        "location":data[2],
+        "currentOwnerName":data[3],
         "status":data[4],
-        "currentOwwner":data[5],
+        "currentOwner":data[5],
         "currentOwnerType":data[6],
         "sourceCountry":data[7],
         "destinationCountry":data[8]
       }
-      callback(result)
+      supply.getBatchDateData(_batchId, {from: sender, gas:4600000}).then(datas=>{
+        result["manufacturedDate"]=datas[1];
+        result["expiryDate"]=datas[2];
+        result["createdDate"]=datas[3];
+        result["deliveredDate"]=datas[3];
+        callback(result)
+      }).catch(function(e) {
+        console.log(e);
+        callback("ERROR 404");
+      });
+      
     }).catch(function(e) {
       console.log(e);
       callback("ERROR 404");

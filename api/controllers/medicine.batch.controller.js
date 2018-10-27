@@ -13,17 +13,20 @@ exports.create = (req, res) => {
 		(transaction)=>{
 		const batchidHistory =new BatchidHistory({
 			batchId:req.body.batchId,
-			transactions:[{id:"transaction",action:"create",transactionTime:new Date(),initiater:req.body.user}]
+			transactions:[{id:transaction.tx,action:"create",transactionTime:new Date(),initiater:req.body.user}]
 		});
 		batchidHistory.save()
 	    .then(data => {
-	        res.send("updated successfully");
+	        res.send({
+				"status":"success"
+			});
 	    }).catch(err => {
 	        res.status(500).send({
+				status:"failure",
 	            message: err.message || "Some error occurred while creating the batch history."
 	        });
 	    });
-	// });
+	});
 };
 
 exports.recieve = (req, res) => {
@@ -33,12 +36,15 @@ exports.recieve = (req, res) => {
 		(transaction)=>{
 		BatchidHistory.updateOne(
 			{batchId:req.body.batchId},
-			{$push:{transactions:{id:"transaction",action:"recieve",transactionTime:new Date(),initiater:req.body.user}}}
+			{$push:{transactions:{id:transaction.tx,action:"recieve",transactionTime:new Date(),initiater:req.body.user}}}
 		).then(data => {
-	        res.send("updated successfully");
+	        res.send({
+				"status":"success"
+			});
 	    }).catch(err => {
 	        res.status(500).send({
-	            message: err.message || "Some error occurred while creating the batch history."
+				status:"failure",
+	            message: err.message || "Some error occurred while updating the batch history."
 	        });
 	    });
 	});
@@ -51,11 +57,14 @@ exports.dispatch = (req, res) => {
 		(transaction)=>{
 		BatchidHistory.updateOne(
 			{batchId:req.body._batchId},
-			{$push:{transactions:{id:"transaction",action:"recieve",transactionTime:new Date(),initiater:req.body.user}}}
+			{$push:{transactions:{id:transaction.tx,action:"recieve",transactionTime:new Date(),initiater:req.body.user}}}
 		).then(data => {
-	        res.send("updated successfully");
+	        res.send({
+				"status":"success"
+			});
 	    }).catch(err => {
-	        res.status(500).send({
+			res.status(500).send({
+				status:"failure",
 	            message: err.message || "Some error occurred while creating the batch history."
 	        });
 	    });
