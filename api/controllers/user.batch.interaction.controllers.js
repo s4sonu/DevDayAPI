@@ -37,12 +37,12 @@ exports.removeBatchFromUser = (username, batchid) => {
     });
 };
 exports.getBatchesInfoForUser = async (req, res) => {
-	if(!req.body.username) {
+	if(!req.body.user) {
         return res.status(400).send({
             message: "username can not be empty"
         });
     }
-    UsersBatchInteraction.findOne({username:req.body.username})
+    UsersBatchInteraction.findOne({username:req.body.user})
     .then(async userBatch => {
 		if(!userBatch){
 			return res.status(404).send({
@@ -53,7 +53,7 @@ exports.getBatchesInfoForUser = async (req, res) => {
 		var length = userBatch.batchids.length;
 		var result=[];
 		for(var i=0;i<userBatch.batchids.length;i++){
-			 var data =  await truffle_connect.getMedicineData(userBatch.batchids[i],req.body.username);
+			 var data =  await truffle_connect.getMedicineData(userBatch.batchids[i],req.body.user);
 			 if(data){
 				 result.push(data)
 			 }

@@ -8,6 +8,9 @@ const UserSchema = mongoose.Schema({
         lowercase: true,
         trim: true
     },
+    approved:{
+        type:Boolean
+    }
     password: {
         type: String,
         required: 'Please fill in a password'

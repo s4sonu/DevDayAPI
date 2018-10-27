@@ -1,6 +1,6 @@
 const User = require('../models/users.model.js');
 const truffle_connect = require('../../connection/app.js');
-
+const BatchidHistory = require('../models/batchid.history.model.js');
 // Create and Save a new User
 exports.create = (req, res) => {
 
@@ -63,41 +63,63 @@ exports.findOne = (req, res) => {
 };
 
 // Update a user identified by the username in the request
-exports.update = (req, res) => {
-  // Validate Request
-    if(!req.body.content) {
-        return res.status(400).send({
-            message: "user content can not be empty"
-        });
-    }
+update = (username, approved) => {
 
-    // Find user and update it with the request body
-    User.findByIdAndUpdate(req.params.username, {
-        blockchainId:req.body.blockchainId
-    }, {new: true})
+    // Find user and update it
+    User.UpdateOne(username, {
+        approved:approved
+    }, {upsert:false,new: true})
     .then(user => {
         if(!user) {
-            return res.status(404).send({
-                message: "user not found with id " + req.params.username
-            });
+            return {
+                status:"failure",
+                message: "user not found with id " + username
+            }
         }
-        res.send(user);
+        return{
+            status:"success"
+        };
     }).catch(err => {
         if(err.kind === 'ObjectId') {
-            return res.status(404).send({
-                message: "user not found with id " + req.params.username
-            });                
+            return {
+                status:"failure",
+                message: "user not found with id " + username
+            }                
         }
-        return res.status(500).send({
-            message: "Error updating user with id " + req.params.username
+        return {
+            status:"failure",
+            message: "user not found with id " + username
+        }
+    });
+};
+
+exports.getAllUsers = (req, res) => {
+    User.find({},{"password":0,"_id":0})
+    .then(users => {
+        res.send(users);
+    }).catch(err => {
+        res.status(500).send({
+            status:"failure",
+            message: "Error fetching users."
         });
     });
 };
 
+exports.getTransactionsForBatchId = (req, res) => {
+    BatchidHistory.find({batchId:req.body.batchId},{"transactions":1,"_id":0})
+    .then(transactions => {
+        res.send(transactions);
+    }).catch(err => {
+        res.status(500).send({
+            status:"failure",
+            message: "Error fetching transactions."
+        });
+    });
+}
 exports.createSupplyChainUsers = (req, res) => {
-    truffle_connect.createSupplyChainUsers(req.body.userName, req.body.userAccount, req.body.userType ,req.body.user,(address)=>{
-        res.send({
-            "status":"success"
-        })
+   
+    truffle_connect.createSupplyChainUsers(req.body.userAddress, req.body.userType,req.sender,(address)=>{
+        update(req.body.userAddress,true);
+        res.send({status:"success",transaction:address});
     });
 }

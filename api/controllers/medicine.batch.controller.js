@@ -15,7 +15,7 @@ exports.create = (req, res) => {
 		userBatchInteraction.addBatchToUser(req.body.user, req.body.batchId);
 		const batchidHistory =new BatchidHistory({
 			batchId:req.body.batchId,
-			transactions:[{id:transaction.tx,action:"create",transactionTime:new Date(),initiater:req.body.user}]
+			transactions:[{id:transaction.tx,action:"create",transactionTime:new Date(),initiater:req.body.user,username:"MedChainAdmin",usertype:0}]
 		});
 		batchidHistory.save()
 	    .then(data => {
@@ -39,7 +39,7 @@ exports.recieve = (req, res) => {
 		userBatchInteraction.addBatchToUser(req.body.user, req.body.batchId);
 		BatchidHistory.updateOne(
 			{batchId:req.body.batchId},
-			{$push:{transactions:{id:transaction.tx,action:"recieve",transactionTime:new Date(),initiater:req.body.user}}}
+			{$push:{transactions:{id:transaction.tx,action:"recieve",transactionTime:new Date(),initiater:req.body.user,username:req.body.username,usertype:req.body.usertype}}}
 		).then(data => {
 	        res.send({
 				"status":"success"
@@ -61,7 +61,7 @@ exports.dispatch = (req, res) => {
 		userBatchInteraction.addBatchToUser(req.body.user, req.body.batchId);
 		BatchidHistory.updateOne(
 			{batchId:req.body._batchId},
-			{$push:{transactions:{id:transaction.tx,action:"recieve",transactionTime:new Date(),initiater:req.body.user}}}
+			{$push:{transactions:{id:transaction.tx,action:"recieve",transactionTime:new Date(),initiater:req.body.user,username:req.body.username,usertype:req.body.usertype}}}
 		).then(data => {
 	        res.send({
 				"status":"success"
