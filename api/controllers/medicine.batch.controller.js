@@ -1,5 +1,6 @@
 const truffle_connect = require('../../connection/app.js');
 const BatchidHistory = require('../models/batchid.history.model.js');
+const userBatchInteraction = require('../controllers/user.batch.interaction.controllers.js');
 exports.create = (req, res) => {
 	truffle_connect.createBatch(req.body.batchId,
 		req.body.noOfMedicines,
@@ -11,6 +12,7 @@ exports.create = (req, res) => {
 		req.body.destinationCountry,
 		req.body.user,
 		(transaction)=>{
+		userBatchInteraction.addBatchToUser(req.body.batchId,req.body.user);
 		const batchidHistory =new BatchidHistory({
 			batchId:req.body.batchId,
 			transactions:[{id:transaction.tx,action:"create",transactionTime:new Date(),initiater:req.body.user}]
@@ -34,6 +36,7 @@ exports.recieve = (req, res) => {
 		req.body.destinationCountry,
 		req.body.user,
 		(transaction)=>{
+		userBatchInteraction.addBatchToUser(req.body.batchId,req.body.user)
 		BatchidHistory.updateOne(
 			{batchId:req.body.batchId},
 			{$push:{transactions:{id:transaction.tx,action:"recieve",transactionTime:new Date(),initiater:req.body.user}}}
