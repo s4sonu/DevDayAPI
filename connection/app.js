@@ -202,6 +202,37 @@ module.exports = {
         callback("ERROR 404");
       });
     })
-  }
+  },
+  verifyMedicineBatch: function (_batchId, sender, callback){
+    var self = this;
+    // Bootstrap the Supply abstraction for Use.
+    Supply.setProvider(self.web3.currentProvider);
 
+    var meta;
+    Supply.deployed().then(function (instance) {
+      supply = instance;
+
+    }).then(function (data) {
+        
+      }).catch(function (e) {
+        console.log(e);
+        callback("ERROR 404");
+      });
+  },
+  setDeliveredForBatch: function(_batchId, sender, callback){
+    var self = this;
+    // Bootstrap the Supply abstraction for Use.
+    Supply.setProvider(self.web3.currentProvider);
+
+    var meta;
+    Supply.deployed().then(function (instance) {
+      supply = instance;
+
+    }).then(function (data) {
+        
+      }).catch(function (e) {
+        console.log(e);
+        callback("ERROR 404");
+      });
+  }
 }
