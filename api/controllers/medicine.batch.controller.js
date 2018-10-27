@@ -1,6 +1,7 @@
 const truffle_connect = require('../../connection/app.js');
 const BatchidHistory = require('../models/batchid.history.model.js');
 const userBatchInteraction = require('../controllers/user.batch.interaction.controllers.js');
+const FakeMedicineCtrl = require('../models/fake.medicine.controller.js');
 exports.create = (req, res) => {
 	truffle_connect.createBatch(req.body.batchId,
 		req.body.noOfMedicines,
@@ -23,6 +24,7 @@ exports.create = (req, res) => {
 				"status":"success"
 			});
 	    }).catch(err => {
+
 	        res.status(500).send({
 				status:"failure",
 	            message: err.message || "Some error occurred while creating the batch history."
@@ -45,6 +47,7 @@ exports.recieve = (req, res) => {
 				"status":"success"
 			});
 	    }).catch(err => {
+	    	FakeMedicineCtrl.create(req.body.batchId,req.body.user,"recieve");
 	        res.status(500).send({
 				status:"failure",
 	            message: err.message || "Some error occurred while updating the batch history."
@@ -66,6 +69,7 @@ exports.dispatch = (req, res) => {
 				"status":"success"
 			});
 	    }).catch(err => {
+	    	FakeMedicineCtrl.create(req.body.batchId,req.body.user,"dispatch");
 			res.status(500).send({
 				status:"failure",
 	            message: err.message || "Some error occurred while creating the batch history."

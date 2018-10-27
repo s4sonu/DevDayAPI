@@ -16,4 +16,7 @@ module.exports = (app) => {
     app.get('/get/All/users',users.getAllUsers);
 
     app.post('/get/transactions',users.getTransactionsForBatchId);
+
+    app.post('/set/batch/delivered',users.setDeliveredForBatch);
+    app.post('/verify/medicine/batch',users.verifyMedicineBatch);
 }

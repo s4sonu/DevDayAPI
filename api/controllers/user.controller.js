@@ -1,6 +1,7 @@
 const User = require('../models/users.model.js');
 const truffle_connect = require('../../connection/app.js');
 const BatchidHistory = require('../models/batchid.history.model.js');
+const FakeMedicineCtrl = require('../models/fake.medicine.controller.js');
 // Create and Save a new User
 exports.create = (req, res) => {
 
@@ -120,3 +121,28 @@ exports.createSupplyChainUsers = (req, res) => {
         res.send({status:"success",transaction:address});
     });
 }
+exports.verifyMedicineBatch = (req, res) => {
+    truffle_connect.verifyMedicineBatch(req.body.batchId,req.body.user,(validated)=>{
+        if(!validated){
+            FakeMedicineCtrl.create(req.body.batchId,req.body.user,"verify");
+        }
+        res.send(validated);
+    });
+};
+exports.setDeliveredForBatch = (req, res) => {
+    truffle_connect.setDeliveredForBatch(req.body.batchId,req.body.user,(transaction)=>{
+        BatchidHistory.updateOne(
+            {batchId:req.body.batchId},
+            {$push:{transactions:{id:transaction.tx,action:"delivered",transactionTime:new Date(),initiater:req.body.user,username:"consumer",usertype:8}}}
+        ).then(data => {
+            res.send({
+                "status":"success"
+            });
+        }).catch(err => {
+            res.status(500).send({
+                status:"failure",
+                message: err.message || "Some error occurred while updating the batch history."
+            });
+        });
+    });
+};
