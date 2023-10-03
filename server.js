@@ -41,7 +41,7 @@ app.post('/getBalance', (req, res) => {
   truffle_connect.refreshBalance(currentAcount, (answer) => {
     let account_balance = answer;
     truffle_connect.start(function(answer){
-      // get list of all accounts and send it along with the response
+      // we wil get the list of all the accounts and send them along with the response
       let all_accounts = answer;
       response = [account_balance, all_accounts]
       res.send(response);
